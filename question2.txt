@@ -1,0 +1,28 @@
+....
+$catId = $mysqli->real_escape_string($catId);
+$questionsQ = $mysqli->query("
+	SELECT questions.*,
+	users.name as user_name,
+	users.gender as user_gender
+	FROM questions
+	LEFT JOIN users
+	ON questions.user_id = users.id
+	WHERE questions.catalog_id = '{$catId}'
+");
+
+while($question = $questionsQ->fetch_assoc()) {
+    $user = [
+        'name' => $question['user_name'],
+        'gender' => $question['user_gender]
+	];
+	unset($question['user_name']);
+	unset($question['user_gender']);
+
+	$question['user'] = $user;
+	$result[] = [
+	    "question" => $question,
+	    "user" => $user
+	];
+}
+$questionsQ->free();
+....
